@@ -5,6 +5,8 @@ import com.github.mvysny.kaributesting.v10.Routes;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.textfield.TextField;
+import net.weichware.bank.base.Bootstrap;
+import net.weichware.bank.views.LoginView;
 import org.junit.jupiter.api.*;
 
 import static com.github.mvysny.kaributesting.v10.LocatorJ.*;
@@ -22,7 +24,7 @@ import static com.github.mvysny.kaributesting.v10.NotificationsKt.expectNotifica
  * we will not use an actual browser for testing, we do not need to actually start Jetty.
  * @author mavi
  */
-public class MainViewTest {
+public class LoginViewTest {
     private static Routes routes;
 
     @BeforeAll
@@ -66,12 +68,12 @@ public class MainViewTest {
         // The root route should be set directly in the UI; let's check whether it is so.
         // This demoes the direct access to the UI and its children and grand-children,
         // which encompasses all visible Vaadin components.
-        MainView main = (MainView) UI.getCurrent().getChildren().findFirst().get();
+        LoginView main = (LoginView) UI.getCurrent().getChildren().findFirst().get();
 
         // However when using this kind of low-level lookups, the code quickly gets
         // pretty complicated. Let's use the _get() function instead,
         // which will walk the UI tree for us.
-        _assertOne(MainView.class);
+        _assertOne(LoginView.class);
     }
 
     @Test

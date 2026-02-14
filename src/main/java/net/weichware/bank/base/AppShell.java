@@ -1,4 +1,4 @@
-package net.weichware.bank;
+package net.weichware.bank.base;
 
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.page.AppShellConfigurator;
