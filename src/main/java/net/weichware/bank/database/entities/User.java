@@ -3,6 +3,7 @@ package net.weichware.bank.database.entities;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import net.weichware.bank.base.Bootstrap;
+import net.weichware.bank.database.DatabaseException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,14 +17,16 @@ public class User {
     private final String name;
     private final String salt;
     private final String hash;
+    private final boolean isAdmin;
 
     public User(ResultSet resultSet) throws SQLException {
         this.name = resultSet.getString("name");
         this.salt = resultSet.getString("salt");
         this.hash = resultSet.getString("hash");
+        this.isAdmin = resultSet.getString("admin").equals("Y");
     }
 
-    public static Optional<User> get(String name) throws SQLException {
+    public static Optional<User> get(String name) {
         try (
                 Connection connection = Bootstrap.getDataSource().getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement("select * From users where name = ?")
@@ -34,6 +37,8 @@ public class User {
                     return Optional.of(new User(resultSet));
                 }
             }
+        } catch (SQLException e) {
+            throw new DatabaseException("Could not get user by name " + name, e);
         }
         return Optional.empty();
     }

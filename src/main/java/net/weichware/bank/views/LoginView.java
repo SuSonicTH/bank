@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.sql.SQLException;
 
 @Route(LoginView.ROUTE)
 @PageTitle(Main.APPLICATION_NAME + " - " + LoginView.ROUTE)
@@ -41,14 +40,12 @@ public class LoginView extends VerticalLayout {
             var user = User.get(userName);
             if (user.isPresent() && Authentication.isUserAuthenticated(user.get(), password)) {
                 loginOverlay.setOpened(false);
-                Session.get().setUserName(userName);
-                UI.getCurrent().getPage().setLocation(MainView.ROUTE);
+                Session.get().setUser(user.get());
+                UI.getCurrent().getPage().setLocation(AccountView.ROUTE);
             } else {
                 loginOverlay.setError(true);
                 loginOverlay.setEnabled(true);
             }
-        } catch (SQLException e) {
-            log.error("Error while trying to get user", e);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             log.error("Error while trying authenticate user", e);
         }

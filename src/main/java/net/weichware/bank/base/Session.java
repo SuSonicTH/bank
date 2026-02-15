@@ -6,6 +6,7 @@ import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.WrappedSession;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import net.weichware.bank.database.entities.User;
 import net.weichware.bank.views.LoginView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,12 +15,12 @@ import org.slf4j.LoggerFactory;
 @Accessors(fluent = true)
 public class Session {
     private static final Logger log = LoggerFactory.getLogger(Session.class);
-    private String userName;
+    private User user;
     private boolean userLoggedIn;
 
     private Session(WrappedSession wrappedSession) {
-        userName = (String) wrappedSession.getAttribute("userName");
-        if (userName != null) {
+        user = (User) wrappedSession.getAttribute("user");
+        if (user != null) {
             userLoggedIn = true;
         }
     }
@@ -28,19 +29,20 @@ public class Session {
         return new Session(VaadinService.getCurrentRequest().getWrappedSession());
     }
 
-    public void setUserName(String userName) {
-        if (userName != null) {
-            log.info("user {} logged in", userName);
+    public void setUser(User user) {
+        if (user != null) {
+            log.info("user {} logged in", user.name());
         }
 
-        this.userName = userName;
-        userLoggedIn = userName != null;
-        VaadinService.getCurrentRequest().getWrappedSession().setAttribute("userName", userName);
+        this.user = user;
+        userLoggedIn = user != null;
+        VaadinService.getCurrentRequest().getWrappedSession().setAttribute("user", user);
     }
 
     public void logout() {
-        log.info("user {} logged out", this.userName);
-        setUserName(null);
+        log.info("user {} logged out", this.user.name());
+        setUser(null);
         UI.getCurrent().getPage().setLocation(LoginView.ROUTE);
     }
+
 }
