@@ -11,8 +11,8 @@ import java.security.spec.KeySpec;
 import java.util.HexFormat;
 
 public class Authentication {
-    private final SecureRandom random = new SecureRandom();
     private static final HexFormat hexFormat = HexFormat.of();
+    private final SecureRandom random = new SecureRandom();
 
     public static boolean isUserAuthenticated(User user, String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
         byte[] salt = hexFormat.parseHex(user.salt());

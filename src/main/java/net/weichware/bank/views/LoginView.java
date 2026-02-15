@@ -19,9 +19,8 @@ import java.security.spec.InvalidKeySpecException;
 @Route(LoginView.ROUTE)
 @PageTitle(Main.APPLICATION_NAME + " - " + LoginView.ROUTE)
 public class LoginView extends VerticalLayout {
-    private static final Logger log = LoggerFactory.getLogger(LoginView.class);
     public static final String ROUTE = "Login";
-
+    private static final Logger log = LoggerFactory.getLogger(LoginView.class);
     private final LoginOverlay loginOverlay = new LoginOverlay();
 
     public LoginView() {

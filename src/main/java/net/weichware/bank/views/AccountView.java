@@ -18,6 +18,7 @@ import net.weichware.bank.database.entities.User;
 public class AccountView extends VerticalLayout {
     public static final String ROUTE = "Konto";
     private final User user;
+
     public AccountView() {
         Session session = Session.get();
         user = session.user();
@@ -37,7 +38,7 @@ public class AccountView extends VerticalLayout {
 
     private void adminPageSetup() {
         add(new NativeLabel("Konten"));
-        for (Account account :Account.getList()) {
+        for (Account account : Account.getList()) {
             add(new NativeLabel(account.name() + ": " + account.balance()));
         }
 
@@ -53,7 +54,7 @@ public class AccountView extends VerticalLayout {
     }
 
     private void userPageSetup() {
-        add(new NativeLabel( "Guthaben : " + Account.get(user.name()).balance()));
+        add(new NativeLabel("Guthaben : " + Account.get(user.name()).balance()));
 
         Grid<Transaction> grid = new Grid<>(Transaction.class, false);
         grid.addColumn(Transaction::bookingTime).setHeader("Buchungs Zeit");

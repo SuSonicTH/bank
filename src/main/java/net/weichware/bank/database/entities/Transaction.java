@@ -1,8 +1,5 @@
 package net.weichware.bank.database.entities;
 
-
-//statement.execute("create table TRANSACTION(name varchar(30), booking_time timestamp, description varchar(50), booking_value numeric(4,2),  value_date date, state varchar(20))");
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
@@ -34,14 +31,14 @@ public class Transaction {
 
     private Transaction(ResultSet resultSet) throws SQLException {
         name = resultSet.getString("name");
-        bookingTime = resultSet.getObject("booking_time",  LocalDateTime.class);
+        bookingTime = resultSet.getObject("booking_time", LocalDateTime.class);
         description = resultSet.getString("description");
         bookingValue = resultSet.getDouble("booking_value");
-        valueDate = resultSet.getObject("value_date",LocalDate.class);
+        valueDate = resultSet.getObject("value_date", LocalDate.class);
         state = resultSet.getString("state");
     }
 
-    public static List<Transaction> getOpenTransactions(){
+    public static List<Transaction> getOpenTransactions() {
         List<Transaction> openTransactions = new ArrayList<>();
         try (
                 Connection connection = Bootstrap.getDataSource().getConnection();
@@ -64,7 +61,7 @@ public class Transaction {
                 PreparedStatement preparedStatement = connection.prepareStatement("select * From TRANSACTION where state = 'open' and name = ? order by booking_time desc")
         ) {
             preparedStatement.setString(1, name);
-            try(ResultSet resultSet = preparedStatement.executeQuery()){
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
                     openTransactions.add(new Transaction(resultSet));
                 }

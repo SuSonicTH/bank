@@ -8,7 +8,7 @@ import java.sql.Statement;
 public class Database {
 
     public static void init(DataSource dataSource) throws SQLException {
-        try(
+        try (
                 Connection connection = dataSource.getConnection();
                 Statement statement = connection.createStatement()
         ) {
