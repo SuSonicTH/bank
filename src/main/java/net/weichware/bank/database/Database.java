@@ -21,7 +21,7 @@ public class Database {
             statement.execute("insert into ACCOUNT(name, balance) values ('christoph', 0.0)");
             statement.execute("insert into ACCOUNT(name, balance) values ('katharina', 1.96)");
             statement.execute("insert into ACCOUNT(name, balance) values ('maximilian', -20)");
-            statement.execute("create table TRANSACTION(name varchar(30), booking_time timestamp, description varchar(50), booking_value numeric(4,2),  value_date date, state varchar(20))");
+            statement.execute("create table TRANSACTION(name varchar(30), booking_time timestamp, description varchar(100), booking_value numeric(4,2),  value_date date, state varchar(20))");
 
             statement.execute("insert into TRANSACTION(name, booking_time, description, booking_value, value_date, state) values ('katharina',to_date('202512101447', 'yyyymmddhhmi'), 'Billa', 25, to_date('20251210', 'yyyymmdd'), 'open')");
             statement.execute("insert into TRANSACTION(name, booking_time, description, booking_value, value_date, state) values ('katharina',to_date('202601291626', 'yyyymmddhhmi'), 'Vorschuss', -10, to_date('20260129', 'yyyymmdd'), 'open')");

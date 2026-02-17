@@ -20,7 +20,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
-
 @Route(AccountView.ROUTE)
 @PageTitle(Main.APPLICATION_NAME + " - " + AccountView.ROUTE)
 public class AccountView extends VerticalLayout {
@@ -47,13 +46,14 @@ public class AccountView extends VerticalLayout {
     }
 
     private void adminPageSetup() {
-        add(new NativeLabel("Konten"));
+        add(new MainMenu(user, "Konten"));
         add(accountLayout(Account.getList()));
         add(new NativeLabel("Buchungen"));
         add(transactionLayout(Transaction.getOpenTransactions()));
     }
 
     private void userPageSetup() {
+        add(new MainMenu(user, "Konto"));
         add(getBalanceCard(Account.get(user.name())));
         add(new NativeLabel("Buchungen"));
         add(transactionLayout(Transaction.getOpenTransactions(user.name())));
