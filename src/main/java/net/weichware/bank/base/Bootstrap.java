@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 
 /**
@@ -19,7 +21,7 @@ import java.sql.SQLException;
 @WebListener
 public class Bootstrap implements ServletContextListener {
     private static final Logger log = LoggerFactory.getLogger(Bootstrap.class);
-    private static String JDBC_URL = "jdbc:h2:mem:test;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH";
+    private static String JDBC_URL = "jdbc:h2:./bank;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH";
     private static ConnectionPool connectionPool;
 
     public static void setJdbcUrl(String jdbcUrl) {
@@ -32,11 +34,14 @@ public class Bootstrap implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
+        boolean isNew = !Files.exists(Paths.get("./bank.mv.db"));
         connectionPool = new ConnectionPool(JDBC_URL, null, null);
-        try {
-            Database.init(connectionPool.dataSource());
-        } catch (SQLException e) {
-            log.error("Cannot init connection pool", e);
+        if (isNew) {
+            try {
+                Database.init(connectionPool.dataSource());
+            } catch (SQLException e) {
+                log.error("Cannot init connection pool", e);
+            }
         }
     }
 

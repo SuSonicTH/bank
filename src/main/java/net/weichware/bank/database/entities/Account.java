@@ -20,9 +20,11 @@ import java.util.List;
 public class Account {
     private final String name;
     private final double balance;
+    private final String displayName;
 
     public Account(ResultSet resultSet) throws SQLException {
         this.name = resultSet.getString("name");
+        this.displayName = name.substring(0, 1).toUpperCase() + name.substring(1);
         this.balance = resultSet.getDouble("balance");
     }
 
@@ -58,6 +60,5 @@ public class Account {
         }
         return accounts;
     }
-
 
 }

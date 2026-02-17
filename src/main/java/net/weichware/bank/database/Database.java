@@ -30,7 +30,7 @@ public class Database {
             statement.execute("insert into TRANSACTION(name, booking_time, description, booking_value, value_date, state) values ('maximilian',to_date('202512151659', 'yyyymmddhhmi'), 'Kebab', 54.70, to_date('20251215', 'yyyymmdd'), 'open')");
             statement.execute("insert into TRANSACTION(name, booking_time, description, booking_value, value_date, state) values ('maximilian',to_date('202512181450', 'yyyymmddhhmi'), 'Billa', 20.54, to_date('20251212', 'yyyymmdd'), 'open')");
             statement.execute("insert into TRANSACTION(name, booking_time, description, booking_value, value_date, state) values ('maximilian',to_date('202512181450', 'yyyymmddhhmi'), 'Lidl', 4.53, to_date('20251218', 'yyyymmdd'), 'open')");
-            statement.execute("insert into TRANSACTION(name, booking_time, description, booking_value, value_date, state) values ('maximilian',to_date('202601291322', 'yyyymmddhhmi'), 'Billa', 26,65, to_date('20260129', 'yyyymmdd'), 'open')");
+            statement.execute("insert into TRANSACTION(name, booking_time, description, booking_value, value_date, state) values ('maximilian',to_date('202601291322', 'yyyymmddhhmi'), 'Billa', 26.65, to_date('20260129', 'yyyymmdd'), 'open')");
         }
     }
 }
