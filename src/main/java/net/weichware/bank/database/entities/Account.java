@@ -3,7 +3,7 @@ package net.weichware.bank.database.entities;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import net.weichware.bank.base.Bootstrap;
+import net.weichware.bank.base.State;
 import net.weichware.bank.database.DatabaseException;
 
 import java.sql.Connection;
@@ -30,7 +30,7 @@ public class Account {
 
     public static Account get(String name) {
         try (
-                Connection connection = Bootstrap.getDataSource().getConnection();
+                Connection connection = State.dataSource().getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement("select * From account where name = ?")
         ) {
             preparedStatement.setString(1, name);
@@ -48,7 +48,7 @@ public class Account {
     public static List<Account> getList() {
         List<Account> accounts = new ArrayList<>();
         try (
-                Connection connection = Bootstrap.getDataSource().getConnection();
+                Connection connection = State.dataSource().getConnection();
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery("select * From account")
         ) {

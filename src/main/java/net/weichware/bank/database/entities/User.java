@@ -1,8 +1,9 @@
 package net.weichware.bank.database.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import net.weichware.bank.base.Bootstrap;
+import net.weichware.bank.base.State;
 import net.weichware.bank.database.DatabaseException;
 
 import java.sql.Connection;
@@ -13,6 +14,7 @@ import java.util.Optional;
 
 @Getter
 @Accessors(makeFinal = true, fluent = true)
+@AllArgsConstructor
 public class User {
     private final String name;
     private final String salt;
@@ -28,7 +30,7 @@ public class User {
 
     public static Optional<User> get(String name) {
         try (
-                Connection connection = Bootstrap.getDataSource().getConnection();
+                Connection connection = State.dataSource().getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement("select * From users where name = ?")
         ) {
             preparedStatement.setString(1, name);

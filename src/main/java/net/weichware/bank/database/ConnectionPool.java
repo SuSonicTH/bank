@@ -15,7 +15,7 @@ public class ConnectionPool {
         config.setPassword(password);
 
         config.addDataSourceProperty("cachePrepStmts", "true");
-        config.addDataSourceProperty("minimumIdle", "5");
+        config.addDataSourceProperty("minimumIdle", "3");
         config.addDataSourceProperty("maximumPoolSize", "50");
 
         dataSource = new HikariDataSource(config);

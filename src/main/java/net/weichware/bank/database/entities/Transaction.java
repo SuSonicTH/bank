@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import net.weichware.bank.base.Bootstrap;
+import net.weichware.bank.base.State;
 import net.weichware.bank.database.DatabaseException;
 
 import java.sql.Connection;
@@ -41,7 +41,7 @@ public class Transaction {
     public static List<Transaction> getOpenTransactions() {
         List<Transaction> openTransactions = new ArrayList<>();
         try (
-                Connection connection = Bootstrap.getDataSource().getConnection();
+                Connection connection = State.dataSource().getConnection();
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery("select * From TRANSACTION where state = 'open' order by booking_time desc")
         ) {
@@ -57,7 +57,7 @@ public class Transaction {
     public static List<Transaction> getOpenTransactions(String name) {
         List<Transaction> openTransactions = new ArrayList<>();
         try (
-                Connection connection = Bootstrap.getDataSource().getConnection();
+                Connection connection = State.dataSource().getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement("select * From TRANSACTION where state = 'open' and name = ? order by booking_time desc")
         ) {
             preparedStatement.setString(1, name);

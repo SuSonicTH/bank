@@ -17,10 +17,12 @@ public class Database {
             statement.execute("insert into USERS(name, salt, hash) values ('christoph', '13ba68aa601f392f34c9f0e25387d99f', 'efc38ddf4f4c208e182f5d98855c3dcf')"); //pw:dimnpw
             statement.execute("insert into USERS(name, salt, hash) values ('katharina', '13ba68aa601f392f34c9f0e25387d99f', 'efc38ddf4f4c208e182f5d98855c3dcf')"); //pw:dimnpw
             statement.execute("insert into USERS(name, salt, hash) values ('maximilian', '13ba68aa601f392f34c9f0e25387d99f', 'efc38ddf4f4c208e182f5d98855c3dcf')"); //pw:dimnpw
+
             statement.execute("create table ACCOUNT(name varchar(30), balance numeric(4,2))");
             statement.execute("insert into ACCOUNT(name, balance) values ('christoph', 0.0)");
             statement.execute("insert into ACCOUNT(name, balance) values ('katharina', 1.96)");
             statement.execute("insert into ACCOUNT(name, balance) values ('maximilian', -20)");
+
             statement.execute("create table TRANSACTION(name varchar(30), booking_time timestamp, description varchar(100), booking_value numeric(4,2),  value_date date, state varchar(20))");
 
             statement.execute("insert into TRANSACTION(name, booking_time, description, booking_value, value_date, state) values ('katharina',to_date('202512101447', 'yyyymmddhhmi'), 'Billa', 25, to_date('20251210', 'yyyymmdd'), 'open')");

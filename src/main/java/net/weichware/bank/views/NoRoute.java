@@ -7,6 +7,6 @@ import com.vaadin.flow.router.Route;
 @Route("")
 public class NoRoute extends VerticalLayout {
     public NoRoute() {
-        UI.getCurrent().getPage().setLocation(LoginView.ROUTE);
+        UI.getCurrent().navigate(LoginView.class);
     }
 }

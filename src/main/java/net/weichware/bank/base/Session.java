@@ -2,7 +2,7 @@ package net.weichware.bank.base;
 
 
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.server.VaadinService;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.WrappedSession;
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -26,7 +26,7 @@ public class Session {
     }
 
     public static Session get() {
-        return new Session(VaadinService.getCurrentRequest().getWrappedSession());
+        return new Session(VaadinSession.getCurrent().getSession());
     }
 
     public void setUser(User user) {
@@ -36,7 +36,7 @@ public class Session {
 
         this.user = user;
         userLoggedIn = user != null;
-        VaadinService.getCurrentRequest().getWrappedSession().setAttribute("user", user);
+        VaadinSession.getCurrent().getSession().setAttribute("user", user);
     }
 
     public void logout() {

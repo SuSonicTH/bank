@@ -25,8 +25,8 @@ import java.util.Locale;
 public class AccountView extends VerticalLayout {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final NumberFormat NUMBER_FORMAT = NumberFormat.getCurrencyInstance(Locale.GERMANY);
-
     public static final String ROUTE = "Konto";
+
     private final User user;
 
     public AccountView() {
@@ -34,7 +34,7 @@ public class AccountView extends VerticalLayout {
         user = session.user();
 
         if (!session.userLoggedIn()) {
-            UI.getCurrent().getPage().setLocation(LoginView.ROUTE);
+            UI.getCurrent().navigate(LoginView.class);
         } else {
             if (session.user().isAdmin()) {
                 adminPageSetup();
@@ -61,6 +61,7 @@ public class AccountView extends VerticalLayout {
 
     private VerticalLayout accountLayout(List<Account> accounts) {
         VerticalLayout layout = new VerticalLayout();
+        layout.setId("accountLayout");
         layout.setMaxWidth("500px");
         accounts.stream().map(this::getAccountCard).forEach(layout::add);
         return layout;
@@ -68,6 +69,7 @@ public class AccountView extends VerticalLayout {
 
     private VerticalLayout transactionLayout(List<Transaction> transactions) {
         VerticalLayout layout = new VerticalLayout();
+        layout.setId("transactionLayout");
         layout.setMaxWidth("500px");
         transactions.stream().map(this::getTransactionCard).forEach(layout::add);
         return layout;
