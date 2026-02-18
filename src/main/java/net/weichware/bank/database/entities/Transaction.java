@@ -71,4 +71,22 @@ public class Transaction {
         }
         return openTransactions;
     }
+
+    public void save() {
+        try (
+                Connection connection = State.dataSource().getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement("insert into TRANSACTION (name, booking_time, description, booking_value, value_date, state) values (?,?,?,?,?,?)")
+        ) {
+            preparedStatement.setString(1, name);
+            preparedStatement.setObject(2, bookingTime);
+            preparedStatement.setString(3, description);
+            preparedStatement.setDouble(4, bookingValue);
+            preparedStatement.setObject(5, valueDate);
+            preparedStatement.setString(6, state);
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DatabaseException("Could not get open transactions", e);
+        }
+    }
 }

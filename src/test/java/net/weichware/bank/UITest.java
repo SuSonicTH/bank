@@ -13,6 +13,7 @@ import net.weichware.bank.base.StateConfig;
 import net.weichware.bank.database.Database;
 import net.weichware.bank.database.entities.User;
 import net.weichware.bank.views.AccountView;
+import net.weichware.bank.views.LoginView;
 import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -24,8 +25,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.github.mvysny.kaributesting.v10.LocatorJ._find;
-import static com.github.mvysny.kaributesting.v10.LocatorJ._get;
+import static com.github.mvysny.kaributesting.v10.LocatorJ.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UITest {
@@ -61,12 +61,12 @@ public class UITest {
 
     @Test
     public void loginTest() {
-        //UI.getCurrent().navigate(LoginView.class);
-        //_assertOne(LoginView.class);
+        UI.getCurrent().navigate(LoginView.class);
+        _assertOne(LoginView.class);
         //LoginOverlay overlay = _get(LoginOverlay.class);
         //_get(overlay,Text.class,sel->sel.withLabel("Username")).setText("mike");
-        //_get(overlay,Text.class,sel->sel.withLabel("Password")).setText("test");
-        //_click(_get(overlay,Button.class, spec -> spec.withText("Log in")));
+        //_get(overlay, Text.class, sel->sel.withLabel("Password")).setText("test");
+        //_click(_get(overlay, Button.class, spec -> spec.withText("Log in")));
     }
 
     @Test

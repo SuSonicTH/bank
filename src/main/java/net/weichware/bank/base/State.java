@@ -12,6 +12,7 @@ public class State {
 
     public static void init(StateConfig config) {
         connectionPool = new ConnectionPool(config.jdbcUrl(), config.userName(), config.password());
+
     }
 
     public static DataSource dataSource() {

@@ -2,10 +2,14 @@ package net.weichware.bank.views;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.avatar.Avatar;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.card.Card;
 import com.vaadin.flow.component.card.CardVariant;
 import com.vaadin.flow.component.html.NativeLabel;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -55,7 +59,11 @@ public class AccountView extends VerticalLayout {
     private void userPageSetup() {
         add(new MainMenu(user, "Konto"));
         add(getBalanceCard(Account.get(user.name())));
-        add(new NativeLabel("Buchungen"));
+        HorizontalLayout bookings = new HorizontalLayout();
+        bookings.add(new NativeLabel("Buchungen"));
+        bookings.add(new Button("Neue Buchung", new Icon(VaadinIcon.PLUS), (e) -> new Booking().open()));
+        add(bookings);
+
         add(transactionLayout(Transaction.getOpenTransactions(user.name())));
     }
 
