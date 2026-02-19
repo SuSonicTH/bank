@@ -101,7 +101,6 @@ public class Booking extends Dialog {
         Div euroSuffix = new Div();
         euroSuffix.setText("€");
         valueField.setSuffixComponent(euroSuffix);
-        valueField.setMin(1);
         valueField.setRequired(true);
         return valueField;
     }
@@ -162,7 +161,7 @@ public class Booking extends Dialog {
             return;
         }
         Double value = valueField.getValue();
-        if (value == null) {
+        if (value == null || value == 0) {
             validationError("Betrag fehlt");
             return;
         }
