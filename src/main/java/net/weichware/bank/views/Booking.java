@@ -5,7 +5,6 @@ import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
@@ -30,6 +29,7 @@ public class Booking extends Dialog {
     private DatePicker datePicker;
     private Button saveButton;
     private final Transaction transaction;
+    private boolean smallScreen;
 
     public Booking() {
         this(null);
@@ -51,10 +51,20 @@ public class Booking extends Dialog {
         getHeader().add(new Button(new Icon("lumo", "cross"), (e) -> Booking.this.close()));
         setModality(ModalityMode.STRICT);
         setCloseOnEsc(true);
-        setDraggable(true);
+        setCloseOnOutsideClick(false);
+
+        UI.getCurrent().getPage().retrieveExtendedClientDetails(evt -> {
+            if (evt.getWindowInnerWidth() < 600) {
+                setTop("10px");
+                smallScreen = true;
+            }
+        });
 
         VerticalLayout verticalLayout = new VerticalLayout();
         add(verticalLayout);
+        verticalLayout.setMargin(false);
+        verticalLayout.setSpacing(false);
+        verticalLayout.setPadding(false);
 
         verticalLayout.add(createDescriptionFiled());
         verticalLayout.add(createValueField());
@@ -116,16 +126,25 @@ public class Booking extends Dialog {
     }
 
     private void delete() {
-        ConfirmDialog dialog = new ConfirmDialog();
-        dialog.setHeader("Buchung löschen?");
-        dialog.setText("Willst du die Buchung wirklich löschen?");
+        Dialog dialog = new Dialog();
+        dialog.setCloseOnEsc(true);
+        dialog.setCloseOnOutsideClick(false);
 
-        dialog.setCancelable(true);
-        dialog.setCancelText("Abbrechen");
+        dialog.setHeaderTitle("Buchung löschen?");
+        dialog.add(new Text("Willst du die Buchung wirklich löschen?"));
 
-        dialog.setConfirmText("Löschen");
-        dialog.addConfirmListener(event -> executeDelete());
+        Button cancelButton = new Button("Abbrechen", e -> dialog.close());
+        cancelButton.setDisableOnClick(true);
 
+        Button deleteButton = new Button("Löschen", e -> executeDelete());
+        deleteButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        deleteButton.setDisableOnClick(true);
+
+        dialog.getFooter().add(cancelButton, deleteButton);
+        dialog.setWidth("400px");
+        if (smallScreen) {
+            dialog.setTop("100px");
+        }
         dialog.open();
     }
 
