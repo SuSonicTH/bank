@@ -86,7 +86,39 @@ public class Transaction {
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            throw new DatabaseException("Could not get open transactions", e);
+            throw new DatabaseException("Could not save transaction " + this, e);
+        }
+    }
+
+    public void delete() {
+        try (
+                Connection connection = State.dataSource().getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement("delete from TRANSACTION where name = ? and  booking_time = ?")
+        ) {
+            preparedStatement.setString(1, name);
+            preparedStatement.setObject(2, bookingTime);
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DatabaseException("Could not delete transaction " + this, e);
+        }
+    }
+
+    public void update(String description, Double value, LocalDate valueDate) {
+        try (
+                Connection connection = State.dataSource().getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement("update TRANSACTION set description = ? , booking_value = ?, value_date = ? where name = ? and  booking_time = ?")
+        ) {
+            preparedStatement.setString(1, description);
+            preparedStatement.setDouble(2, value);
+            preparedStatement.setObject(3, valueDate);
+
+            preparedStatement.setString(4, name);
+            preparedStatement.setObject(5, bookingTime);
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DatabaseException("Could not delete transaction " + this, e);
         }
     }
 }

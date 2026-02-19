@@ -9,6 +9,7 @@ import com.vaadin.flow.component.html.NativeLabel;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
@@ -60,6 +61,7 @@ public class AccountView extends VerticalLayout {
         add(new MainMenu(user, "Konto"));
         add(getBalanceCard(Account.get(user.name())));
         HorizontalLayout bookings = new HorizontalLayout();
+        bookings.setAlignItems(FlexComponent.Alignment.CENTER);
         bookings.add(new NativeLabel("Buchungen"));
         bookings.add(new Button("Neue Buchung", new Icon(VaadinIcon.PLUS), (e) -> new Booking().open()));
         add(bookings);
@@ -87,7 +89,11 @@ public class AccountView extends VerticalLayout {
         Card card = new Card();
         card.setTitle(transaction.description());
         card.setSubtitle(DATE_TIME_FORMATTER.format(transaction.valueDate()));
-        card.setHeaderPrefix(new Avatar(transaction.name().toUpperCase()));
+
+        Button editButton = new Button(new Icon(VaadinIcon.EDIT), (e) -> new Booking(transaction).open());
+        editButton.setTooltipText("Bearbeiten");
+        card.setHeaderPrefix(editButton);
+
         Span badge = new Span(NUMBER_FORMAT.format(transaction.bookingValue()));
         if (transaction.bookingValue() < 0) {
             badge.getElement().getThemeList().add("badge error");
@@ -102,34 +108,40 @@ public class AccountView extends VerticalLayout {
     private VerticalLayout getBalanceCard(Account account) {
         VerticalLayout layout = new VerticalLayout();
         layout.setMaxWidth("500px");
+
         Card card = new Card();
         card.addThemeVariants(CardVariant.LUMO_OUTLINED);
+        card.setWidthFull();
+
         card.setTitle("Kontostand");
         card.setHeaderPrefix(new Avatar(account.name().toUpperCase()));
-        Span badge = new Span(NUMBER_FORMAT.format(account.balance()));
-        if (account.balance() < 0) {
+
+        Span badge = new Span(NUMBER_FORMAT.format(account.openBalance()));
+        if (account.openBalance() < 0) {
             badge.getElement().getThemeList().add("badge error");
         } else {
             badge.getElement().getThemeList().add("badge success");
         }
         card.setHeaderSuffix(badge);
-        card.setWidthFull();
+
         layout.add(card);
         return layout;
     }
 
     private Card getAccountCard(Account account) {
         Card card = new Card();
+        card.setWidthFull();
         card.setTitle(account.displayName());
         card.setHeaderPrefix(new Avatar(account.name().toUpperCase()));
-        Span badge = new Span(NUMBER_FORMAT.format(account.balance()));
-        if (account.balance() < 0) {
+
+        Span badge = new Span(NUMBER_FORMAT.format(account.openBalance()));
+        if (account.openBalance() < 0) {
             badge.getElement().getThemeList().add("badge error");
         } else {
             badge.getElement().getThemeList().add("badge success");
         }
         card.setHeaderSuffix(badge);
-        card.setWidthFull();
+
         return card;
     }
 

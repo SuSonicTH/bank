@@ -5,6 +5,7 @@ import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
@@ -28,9 +29,25 @@ public class Booking extends Dialog {
     private NumberField valueField;
     private DatePicker datePicker;
     private Button saveButton;
+    private final Transaction transaction;
 
     public Booking() {
-        setHeaderTitle("Neue Buchung");
+        this(null);
+    }
+
+    public Booking(Transaction transaction) {
+        this.transaction = transaction;
+        setupDialog();
+
+        if (transaction != null) {
+            descriptionField.setValue(transaction.description());
+            valueField.setValue(transaction.bookingValue());
+            datePicker.setValue(transaction.valueDate());
+        }
+    }
+
+    private void setupDialog() {
+        setHeaderTitle(isNew() ? "Neue Buchung" : "Buchung bearbeiten");
         getHeader().add(new Button(new Icon("lumo", "cross"), (e) -> Booking.this.close()));
         setModality(ModalityMode.STRICT);
         setCloseOnEsc(true);
@@ -43,10 +60,17 @@ public class Booking extends Dialog {
         verticalLayout.add(createValueField());
         verticalLayout.add(createDatePicker());
 
+        if (!isNew()) {
+            getFooter().add(createDeleteButton());
+        }
         getFooter().add(createCancelButton());
         getFooter().add(createSaveButton());
 
         descriptionField.focus();
+    }
+
+    private boolean isNew() {
+        return transaction == null;
     }
 
     private DatePicker createDatePicker() {
@@ -72,6 +96,12 @@ public class Booking extends Dialog {
         return valueField;
     }
 
+    private Button createDeleteButton() {
+        Button button = new Button("Löschen", (e) -> delete());
+        button.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        return button;
+    }
+
     private Button createCancelButton() {
         Button button = new Button("Abbrechen", (e) -> close());
         button.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
@@ -83,6 +113,27 @@ public class Booking extends Dialog {
         saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         saveButton.setDisableOnClick(true);
         return saveButton;
+    }
+
+    private void delete() {
+        ConfirmDialog dialog = new ConfirmDialog();
+        dialog.setHeader("Buchung löschen?");
+        dialog.setText("Willst du die Buchung wirklich löschen?");
+
+        dialog.setCancelable(true);
+        dialog.setCancelText("Abbrechen");
+
+        dialog.setConfirmText("Löschen");
+        dialog.addConfirmListener(event -> executeDelete());
+
+        dialog.open();
+    }
+
+    private void executeDelete() {
+        transaction.delete();
+        close();
+
+        Notify.Success("Buchung gelöscht");
     }
 
     private void save() {
@@ -98,9 +149,20 @@ public class Booking extends Dialog {
         }
         LocalDate valueDate = datePicker.getValue();
 
-        new Transaction(Session.get().user().name(), LocalDateTime.now(), description, value, valueDate, "open").save();
-        UI.getCurrent().refreshCurrentRoute(true);
+        if (isNew()) {
+            new Transaction(Session.get().user().name(), LocalDateTime.now(), description, value, valueDate, "open").save();
+        } else {
+            transaction.update(description, value, valueDate);
+        }
         close();
+
+        Notify.Success(isNew() ? "Buchung gespeichert" : "Buchung aktualisiert");
+    }
+
+    @Override
+    public void close() {
+        UI.getCurrent().refreshCurrentRoute(true);
+        super.close();
     }
 
     private void validationError(String errorMessage) {
