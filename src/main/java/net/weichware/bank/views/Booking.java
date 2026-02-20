@@ -15,20 +15,28 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import net.weichware.bank.base.Session;
+import net.weichware.bank.database.entities.Account;
 import net.weichware.bank.database.entities.Transaction;
+import net.weichware.bank.database.entities.User;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class Booking extends Dialog {
+    private final Transaction transaction;
+    private final User user;
+
     private TextField descriptionField;
     private NumberField valueField;
     private DatePicker datePicker;
     private Button saveButton;
-    private final Transaction transaction;
+    private Select<String> accountField;
+
     private boolean smallScreen;
 
     public Booking() {
@@ -37,9 +45,11 @@ public class Booking extends Dialog {
 
     public Booking(Transaction transaction) {
         this.transaction = transaction;
+        user = Session.get().user();
         setupDialog();
 
         if (transaction != null) {
+            accountField.setValue(transaction.name());
             descriptionField.setValue(transaction.description());
             valueField.setValue(transaction.bookingValue());
             datePicker.setValue(transaction.valueDate());
@@ -66,6 +76,9 @@ public class Booking extends Dialog {
         verticalLayout.setSpacing(false);
         verticalLayout.setPadding(false);
 
+        if (user.isAdmin()) {
+            verticalLayout.add(createAccountField());
+        }
         verticalLayout.add(createDescriptionFiled());
         verticalLayout.add(createValueField());
         verticalLayout.add(createDatePicker());
@@ -77,6 +90,14 @@ public class Booking extends Dialog {
         getFooter().add(createSaveButton());
 
         descriptionField.focus();
+    }
+
+    private Select<String> createAccountField() {
+        List<String> accounts = Account.getList().stream().map(Account::name).toList();
+        accountField = new Select<>();
+        accountField.setLabel("Konto");
+        accountField.setItems(accounts);
+        return accountField;
     }
 
     private boolean isNew() {
@@ -167,10 +188,17 @@ public class Booking extends Dialog {
         }
         LocalDate valueDate = datePicker.getValue();
 
-        if (isNew()) {
-            new Transaction(Session.get().user().name(), LocalDateTime.now(), description, value, valueDate, "open").save();
+        String account;
+        if (user.isAdmin()) {
+            account = accountField.getValue();
         } else {
-            transaction.update(description, value, valueDate);
+            account = user.name();
+        }
+
+        if (isNew()) {
+            new Transaction(account, LocalDateTime.now(), description, value, valueDate, "open").save();
+        } else {
+            transaction.update(account, description, value, valueDate);
         }
         close();
 

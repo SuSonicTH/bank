@@ -5,11 +5,9 @@ import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.card.Card;
 import com.vaadin.flow.component.card.CardVariant;
-import com.vaadin.flow.component.html.NativeLabel;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
@@ -28,10 +26,9 @@ import java.util.Locale;
 @Route(AccountView.ROUTE)
 @PageTitle(Main.APPLICATION_NAME + " - " + AccountView.ROUTE)
 public class AccountView extends VerticalLayout {
+    public static final String ROUTE = "Konto";
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final NumberFormat NUMBER_FORMAT = NumberFormat.getCurrencyInstance(Locale.GERMANY);
-    public static final String ROUTE = "Konto";
-
     private final User user;
 
     public AccountView() {
@@ -53,21 +50,28 @@ public class AccountView extends VerticalLayout {
     private void adminPageSetup() {
         add(new MainMenu(user, "Konten"));
         add(accountLayout(Account.getList()));
-        add(new NativeLabel("Buchungen"));
+        add(createBookingHeader());
         add(transactionLayout(Transaction.getOpenTransactions()));
+    }
+
+    private HorizontalLayout createBookingHeader() {
+        HorizontalLayout bookings = new HorizontalLayout();
+        bookings.setAlignItems(Alignment.CENTER);
+        Span bookingLabel = new Span("Buchungen");
+        bookingLabel.addClassName("subtitleLabel");
+        bookings.add(bookingLabel);
+        bookings.add(new Button("Neue Buchung", new Icon(VaadinIcon.PLUS), (e) -> new Booking().open()));
+        add(bookings);
+        return bookings;
     }
 
     private void userPageSetup() {
         add(new MainMenu(user, "Konto"));
         add(getBalanceCard(Account.get(user.name())));
-        HorizontalLayout bookings = new HorizontalLayout();
-        bookings.setAlignItems(FlexComponent.Alignment.CENTER);
-        bookings.add(new NativeLabel("Buchungen"));
-        bookings.add(new Button("Neue Buchung", new Icon(VaadinIcon.PLUS), (e) -> new Booking().open()));
-        add(bookings);
-
+        add(createBookingHeader());
         add(transactionLayout(Transaction.getOpenTransactions(user.name())));
     }
+
 
     private VerticalLayout accountLayout(List<Account> accounts) {
         VerticalLayout layout = new VerticalLayout();
@@ -90,9 +94,16 @@ public class AccountView extends VerticalLayout {
         card.setTitle(transaction.description());
         card.setSubtitle(DATE_TIME_FORMATTER.format(transaction.valueDate()));
 
+        HorizontalLayout prefixLayout = new HorizontalLayout();
+        prefixLayout.setAlignItems(Alignment.CENTER);
+        if (user.isAdmin()) {
+            prefixLayout.add(new Avatar(transaction.name().toUpperCase()));
+        }
         Button editButton = new Button(new Icon(VaadinIcon.EDIT), (e) -> new Booking(transaction).open());
         editButton.setTooltipText("Bearbeiten");
-        card.setHeaderPrefix(editButton);
+        prefixLayout.add(editButton);
+
+        card.setHeaderPrefix(prefixLayout);
 
         Span badge = new Span(NUMBER_FORMAT.format(transaction.bookingValue()));
         if (transaction.bookingValue() < 0) {

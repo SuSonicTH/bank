@@ -104,17 +104,18 @@ public class Transaction {
         }
     }
 
-    public void update(String description, Double value, LocalDate valueDate) {
+    public void update(String account, String description, Double value, LocalDate valueDate) {
         try (
                 Connection connection = State.dataSource().getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement("update TRANSACTION set description = ? , booking_value = ?, value_date = ? where name = ? and  booking_time = ?")
+                PreparedStatement preparedStatement = connection.prepareStatement("update TRANSACTION set name = ?, description = ? , booking_value = ?, value_date = ? where name = ? and  booking_time = ?")
         ) {
-            preparedStatement.setString(1, description);
-            preparedStatement.setDouble(2, value);
-            preparedStatement.setObject(3, valueDate);
+            preparedStatement.setString(1, account);
+            preparedStatement.setString(2, description);
+            preparedStatement.setDouble(3, value);
+            preparedStatement.setObject(4, valueDate);
 
-            preparedStatement.setString(4, name);
-            preparedStatement.setObject(5, bookingTime);
+            preparedStatement.setString(5, name);
+            preparedStatement.setObject(6, bookingTime);
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
