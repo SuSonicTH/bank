@@ -13,9 +13,6 @@ import net.weichware.bank.database.entities.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-
 @Route(LoginView.ROUTE)
 @PageTitle(Main.APPLICATION_NAME + " - " + LoginView.ROUTE)
 public class LoginView extends VerticalLayout {
@@ -35,19 +32,16 @@ public class LoginView extends VerticalLayout {
         String userName = loginEvent.getUsername();
         String password = loginEvent.getPassword();
 
-        try {
-            var user = User.get(userName);
-            if (user.isPresent() && Authentication.isUserAuthenticated(user.get(), password)) {
-                loginOverlay.setOpened(false);
-                Session.get().setUser(user.get());
-                UI.getCurrent().getPage().setLocation(AccountView.ROUTE);
-            } else {
-                loginOverlay.setError(true);
-                loginOverlay.setEnabled(true);
-            }
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            log.error("Error while trying authenticate user", e);
+        var user = User.get(userName);
+        if (user.isPresent() && Authentication.isUserAuthenticated(user.get(), password)) {
+            loginOverlay.setOpened(false);
+            Session.get().setUser(user.get());
+            UI.getCurrent().getPage().setLocation(AccountView.ROUTE);
+        } else {
+            loginOverlay.setError(true);
+            loginOverlay.setEnabled(true);
         }
+
     }
 
 }

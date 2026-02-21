@@ -3,8 +3,11 @@ package net.weichware.bank.database.entities;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import net.weichware.bank.base.Authentication;
 import net.weichware.bank.base.State;
 import net.weichware.bank.database.DatabaseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,6 +19,8 @@ import java.util.Optional;
 @Accessors(makeFinal = true, fluent = true)
 @AllArgsConstructor
 public class User {
+    private static final Logger log = LoggerFactory.getLogger(User.class);
+
     private final String name;
     private final String salt;
     private final String hash;
@@ -43,5 +48,23 @@ public class User {
             throw new DatabaseException("Could not get user by name " + name, e);
         }
         return Optional.empty();
+    }
+
+    public boolean setPassword(String user, String password) {
+        try (
+                Connection connection = State.dataSource().getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement("update users set hash = ?, salt = ? where name = ?")
+        ) {
+            Authentication.HashAndSalt hashAndSalt = Authentication.getHashAndSalt(password);
+            preparedStatement.setString(1, hashAndSalt.hash());
+            preparedStatement.setString(2, hashAndSalt.salt());
+            preparedStatement.setString(3, user);
+            if (preparedStatement.executeUpdate() > 0) {
+                return true;
+            }
+        } catch (Exception e) {
+            log.error("Could not update database");
+        }
+        return false;
     }
 }

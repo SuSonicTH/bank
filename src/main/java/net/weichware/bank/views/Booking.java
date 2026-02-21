@@ -9,11 +9,6 @@ import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.NotificationVariant;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.NumberField;
@@ -178,12 +173,14 @@ public class Booking extends Dialog {
     private void save() {
         String description = descriptionField.getValue().trim();
         if (description.isEmpty()) {
-            validationError("Beschreibung fehlt");
+            saveButton.setEnabled(true);
+            Notify.validationError("Beschreibung fehlt");
             return;
         }
         Double value = valueField.getValue();
         if (value == null || value == 0) {
-            validationError("Betrag fehlt");
+            saveButton.setEnabled(true);
+            Notify.validationError("Betrag fehlt");
             return;
         }
         LocalDate valueDate = datePicker.getValue();
@@ -211,18 +208,5 @@ public class Booking extends Dialog {
         super.close();
     }
 
-    private void validationError(String errorMessage) {
-        saveButton.setEnabled(true);
-        Notification notification = new Notification();
-        notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
-        notification.setDuration(3000);
-        notification.setPosition(Notification.Position.MIDDLE);
 
-        Button closeButton = new Button(new Icon(VaadinIcon.CLOSE), (e) -> notification.close());
-        var layout = new HorizontalLayout(new Text(errorMessage), closeButton);
-        layout.setAlignItems(FlexComponent.Alignment.CENTER);
-        notification.add(layout);
-
-        notification.open();
-    }
 }

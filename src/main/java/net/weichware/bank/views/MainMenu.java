@@ -28,7 +28,9 @@ public class MainMenu extends HorizontalLayout {
         if (user.isAdmin()) {
             menu.addItem("Benutzer", (event) -> Notification.show("Benutzer", 5000, Notification.Position.TOP_START));
             menu.addItem("Konten", (event) -> Notification.show("Konten", 5000, Notification.Position.TOP_START));
+            menu.addItem("Benutzer Passwort zurücksetzen", (event) -> new NewPassword(true).open());
         }
-        menu.addItem("abmelden", (event) -> Session.get().logout());
+        menu.addItem("Passwort ändern", (event) -> new NewPassword(false).open());
+        menu.addItem("Abmelden", (event) -> Session.get().logout());
     }
 }
