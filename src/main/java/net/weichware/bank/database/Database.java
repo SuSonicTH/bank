@@ -13,7 +13,7 @@ public class Database {
                 Statement statement = connection.createStatement()
         ) {
             statement.execute("create table USERS(name varchar(30), salt varchar(32), hash varchar(32), admin char default 'N')");
-            statement.execute("insert into USERS(name, salt, hash, admin) values ('mike', 'e46f28f21a68ad0e95462cc24d96817c', '024444e011d33f9759cc6b5babe3d373', 'Y')"); //pw:test
+            statement.execute("insert into USERS(name, salt, hash, admin) values ('mike', '13ba68aa601f392f34c9f0e25387d99f', 'efc38ddf4f4c208e182f5d98855c3dcf', 'Y')"); //pw:dimnpw
             statement.execute("insert into USERS(name, salt, hash) values ('christoph', '13ba68aa601f392f34c9f0e25387d99f', 'efc38ddf4f4c208e182f5d98855c3dcf')"); //pw:dimnpw
             statement.execute("insert into USERS(name, salt, hash) values ('katharina', '13ba68aa601f392f34c9f0e25387d99f', 'efc38ddf4f4c208e182f5d98855c3dcf')"); //pw:dimnpw
             statement.execute("insert into USERS(name, salt, hash) values ('maximilian', '13ba68aa601f392f34c9f0e25387d99f', 'efc38ddf4f4c208e182f5d98855c3dcf')"); //pw:dimnpw
@@ -33,6 +33,13 @@ public class Database {
             statement.execute("insert into TRANSACTION(name, booking_time, description, booking_value, value_date, state) values ('maximilian',to_date('202512181450', 'yyyymmddhhmi'), 'Billa', 20.54, to_date('20251212', 'yyyymmdd'), 'open')");
             statement.execute("insert into TRANSACTION(name, booking_time, description, booking_value, value_date, state) values ('maximilian',to_date('202512181450', 'yyyymmddhhmi'), 'Lidl', 4.53, to_date('20251218', 'yyyymmdd'), 'open')");
             statement.execute("insert into TRANSACTION(name, booking_time, description, booking_value, value_date, state) values ('maximilian',to_date('202601291322', 'yyyymmddhhmi'), 'Billa', 26.65, to_date('20260129', 'yyyymmdd'), 'open')");
+            statement.execute("insert into TRANSACTION(name, booking_time, description, booking_value, value_date, state) values ('maximilian',to_date('202602181547', 'yyyymmddhhmi'), 'Lidl und BILLA zum Kochen', 15.78, to_date('20260216', 'yyyymmdd'), 'open')");
+
+            statement.execute("insert into TRANSACTION(name, booking_time, description, booking_value, value_date, state) values ('christoph',to_date('202060120905', 'yyyymmddhhmi'), 'Apotheke', 6.5, to_date('20260119', 'yyyymmdd'), 'open')");
+            statement.execute("insert into TRANSACTION(name, booking_time, description, booking_value, value_date, state) values ('christoph',to_date('202060120905', 'yyyymmddhhmi'), 'Kinderarzt', 10.00, to_date('20260120', 'yyyymmdd'), 'open')");
+            statement.execute("insert into TRANSACTION(name, booking_time, description, booking_value, value_date, state) values ('christoph',to_date('202060120905', 'yyyymmddhhmi'), 'Interspar', 19.14, to_date('20260123', 'yyyymmdd'), 'open')");
+            statement.execute("insert into TRANSACTION(name, booking_time, description, booking_value, value_date, state) values ('christoph',to_date('202602151452', 'yyyymmddhhmi'), 'Interspar', 45.24, to_date('20260213', 'yyyymmdd'), 'open')");
+            statement.execute("insert into TRANSACTION(name, booking_time, description, booking_value, value_date, state) values ('christoph',to_date('202602201523', 'yyyymmddhhmi'), 'Billa', 24.17, to_date('20260220', 'yyyymmdd'), 'open')");
         }
     }
 }

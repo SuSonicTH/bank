@@ -60,6 +60,7 @@ public class User {
             preparedStatement.setString(2, hashAndSalt.salt());
             preparedStatement.setString(3, user);
             if (preparedStatement.executeUpdate() > 0) {
+                log.info("Password updated for user " + user);
                 return true;
             }
         } catch (Exception e) {
