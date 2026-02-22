@@ -2,3 +2,6 @@ target/
 .idea/
 *.iml
 src/main/frontend/generated
+src/main/bundles/prod.bundle
+bank.mv.db
+bank.trace.db
