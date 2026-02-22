@@ -1,6 +1,5 @@
 package net.weichware.bank.database.entities;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
@@ -19,9 +18,9 @@ import java.util.List;
 
 @Getter
 @Accessors(makeFinal = true, fluent = true)
-@AllArgsConstructor
 @ToString
 public class Transaction {
+    private final long id;
     private final String name;
     private final LocalDateTime bookingTime;
     private final String description;
@@ -29,7 +28,18 @@ public class Transaction {
     private final LocalDate valueDate;
     private final String state;
 
+    public Transaction(String name, LocalDateTime bookingTime, String description, double bookingValue, LocalDate valueDate, String state) {
+        this.id = 0;
+        this.name = name;
+        this.bookingTime = bookingTime;
+        this.description = description;
+        this.bookingValue = bookingValue;
+        this.valueDate = valueDate;
+        this.state = state;
+    }
+
     private Transaction(ResultSet resultSet) throws SQLException {
+        id = resultSet.getLong("id");
         name = resultSet.getString("name");
         bookingTime = resultSet.getObject("booking_time", LocalDateTime.class);
         description = resultSet.getString("description");
@@ -93,10 +103,9 @@ public class Transaction {
     public void delete() {
         try (
                 Connection connection = State.dataSource().getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement("delete from TRANSACTION where name = ? and  booking_time = ?")
+                PreparedStatement preparedStatement = connection.prepareStatement("delete from TRANSACTION where id = ?")
         ) {
-            preparedStatement.setString(1, name);
-            preparedStatement.setObject(2, bookingTime);
+            preparedStatement.setLong(1, id);
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -107,19 +116,31 @@ public class Transaction {
     public void update(String account, String description, Double value, LocalDate valueDate) {
         try (
                 Connection connection = State.dataSource().getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement("update TRANSACTION set name = ?, description = ? , booking_value = ?, value_date = ? where name = ? and  booking_time = ?")
+                PreparedStatement preparedStatement = connection.prepareStatement("update TRANSACTION set name = ?, description = ? , booking_value = ?, value_date = ? where id = ?")
         ) {
             preparedStatement.setString(1, account);
             preparedStatement.setString(2, description);
             preparedStatement.setDouble(3, value);
             preparedStatement.setObject(4, valueDate);
 
-            preparedStatement.setString(5, name);
-            preparedStatement.setObject(6, bookingTime);
+            preparedStatement.setLong(5, id);
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            throw new DatabaseException("Could not delete transaction " + this, e);
+            throw new DatabaseException("Could not update transaction " + this, e);
+        }
+    }
+
+    public void setInvoice(long invoice) {
+        try (
+                Connection connection = State.dataSource().getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement("update TRANSACTION set invoice = ?, state = 'closed' where id = ?")
+        ) {
+            preparedStatement.setLong(1, invoice);
+            preparedStatement.setLong(2, id);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DatabaseException("Could not set invoice " + invoice + " for  transaction " + this, e);
         }
     }
 }

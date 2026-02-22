@@ -17,6 +17,7 @@ import net.weichware.bank.base.Session;
 import net.weichware.bank.database.entities.Account;
 import net.weichware.bank.database.entities.Transaction;
 import net.weichware.bank.database.entities.User;
+import net.weichware.bank.dialogs.Booking;
 
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;

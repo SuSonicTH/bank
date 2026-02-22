@@ -1,5 +1,6 @@
 package net.weichware.bank.views;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
@@ -9,6 +10,8 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import net.weichware.bank.base.Session;
 import net.weichware.bank.database.entities.User;
+import net.weichware.bank.dialogs.CreateInvoice;
+import net.weichware.bank.dialogs.NewPassword;
 
 
 public class MainMenu extends HorizontalLayout {
@@ -27,7 +30,9 @@ public class MainMenu extends HorizontalLayout {
         SubMenu menu = menuBar.addItem(new Icon(VaadinIcon.MENU)).getSubMenu();
         if (user.isAdmin()) {
             menu.addItem("Benutzer", (event) -> Notification.show("Benutzer", 5000, Notification.Position.TOP_START));
-            menu.addItem("Konten", (event) -> Notification.show("Konten", 5000, Notification.Position.TOP_START));
+            menu.addItem("Konten", (event) -> UI.getCurrent().navigate(AccountView.ROUTE));
+            menu.addItem("Abrechnungen", (event) -> UI.getCurrent().navigate(InvoiceView.ROUTE));
+            menu.addItem("Abrechnung", (event) -> new CreateInvoice().open());
             menu.addItem("Benutzer Passwort zurücksetzen", (event) -> new NewPassword(true).open());
         }
         menu.addItem("Passwort ändern", (event) -> new NewPassword(false).open());

@@ -1,6 +1,5 @@
-package net.weichware.bank.views;
+package net.weichware.bank.dialogs;
 
-import com.vaadin.flow.component.ModalityMode;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -8,8 +7,6 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
@@ -17,12 +14,13 @@ import net.weichware.bank.base.Session;
 import net.weichware.bank.database.entities.Account;
 import net.weichware.bank.database.entities.Transaction;
 import net.weichware.bank.database.entities.User;
+import net.weichware.bank.views.Notify;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class Booking extends Dialog {
+public class Booking extends BaseDialog {
     private final Transaction transaction;
     private final User user;
 
@@ -32,13 +30,13 @@ public class Booking extends Dialog {
     private Button saveButton;
     private Select<String> accountField;
 
-    private boolean smallScreen;
 
     public Booking() {
         this(null);
     }
 
     public Booking(Transaction transaction) {
+        super(transaction == null ? "Neue Buchung" : "Buchung bearbeiten");
         this.transaction = transaction;
         user = Session.get().user();
         setupDialog();
@@ -52,31 +50,12 @@ public class Booking extends Dialog {
     }
 
     private void setupDialog() {
-        setHeaderTitle(isNew() ? "Neue Buchung" : "Buchung bearbeiten");
-        getHeader().add(new Button(new Icon("lumo", "cross"), (e) -> Booking.this.close()));
-        setModality(ModalityMode.STRICT);
-        setCloseOnEsc(true);
-        setCloseOnOutsideClick(false);
-
-        UI.getCurrent().getPage().retrieveExtendedClientDetails(evt -> {
-            if (evt.getWindowInnerWidth() < 600) {
-                setTop("10px");
-                smallScreen = true;
-            }
-        });
-
-        VerticalLayout verticalLayout = new VerticalLayout();
-        add(verticalLayout);
-        verticalLayout.setMargin(false);
-        verticalLayout.setSpacing(false);
-        verticalLayout.setPadding(false);
-
         if (user.isAdmin()) {
-            verticalLayout.add(createAccountField());
+            layout.add(createAccountField());
         }
-        verticalLayout.add(createDescriptionFiled());
-        verticalLayout.add(createValueField());
-        verticalLayout.add(createDatePicker());
+        layout.add(createDescriptionFiled());
+        layout.add(createValueField());
+        layout.add(createDatePicker());
 
         if (!isNew()) {
             getFooter().add(createDeleteButton());
@@ -157,7 +136,7 @@ public class Booking extends Dialog {
 
         dialog.getFooter().add(cancelButton, deleteButton);
         dialog.setWidth("400px");
-        if (smallScreen) {
+        if (isSmall) {
             dialog.setTop("100px");
         }
         dialog.open();

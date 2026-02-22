@@ -1,22 +1,18 @@
-package net.weichware.bank.views;
+package net.weichware.bank.dialogs;
 
-import com.vaadin.flow.component.ModalityMode;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.PasswordField;
 import net.weichware.bank.base.Authentication;
 import net.weichware.bank.base.Session;
 import net.weichware.bank.database.entities.Account;
 import net.weichware.bank.database.entities.User;
+import net.weichware.bank.views.Notify;
 
 import java.util.List;
 import java.util.Optional;
 
-public class NewPassword extends Dialog {
+public class NewPassword extends BaseDialog {
     private final User user;
     private final boolean reset;
     private Select<String> accountField;
@@ -26,48 +22,31 @@ public class NewPassword extends Dialog {
     private Button saveButton;
 
     public NewPassword(boolean reset) {
+        super("Passwort ändern");
         this.reset = reset;
         user = Session.get().user();
         setupDialog();
     }
 
     private void setupDialog() {
-        setHeaderTitle("Passwort ändern");
-        getHeader().add(new Button(new Icon("lumo", "cross"), (e) -> close()));
-        setModality(ModalityMode.STRICT);
-        setCloseOnEsc(true);
-        setCloseOnOutsideClick(false);
-
-        UI.getCurrent().getPage().retrieveExtendedClientDetails(evt -> {
-            if (evt.getWindowInnerWidth() < 600) {
-                setTop("10px");
-            }
-        });
-
-        VerticalLayout verticalLayout = new VerticalLayout();
-        add(verticalLayout);
-        verticalLayout.setMargin(false);
-        verticalLayout.setSpacing(false);
-        verticalLayout.setPadding(false);
-
         if (reset) {
             List<String> accounts = Account.getList().stream().map(Account::name).filter(name -> !name.equals(user.name())).toList();
             accountField = new Select<>();
             accountField.setLabel("Benutzer");
             accountField.setItems(accounts);
-            verticalLayout.add(accountField);
+            layout.add(accountField);
         } else {
             oldPasswordField = new PasswordField();
             oldPasswordField.setLabel("Altes Passwort");
-            verticalLayout.add(oldPasswordField);
+            layout.add(oldPasswordField);
         }
         newPasswordField = new PasswordField();
         newPasswordField.setLabel("Neues Passwort");
-        verticalLayout.add(newPasswordField);
+        layout.add(newPasswordField);
 
         repeatPasswordField = new PasswordField();
         repeatPasswordField.setLabel("Password wiederholen");
-        verticalLayout.add(repeatPasswordField);
+        layout.add(repeatPasswordField);
 
         saveButton = new Button("Speichern", (e) -> save());
         saveButton.setDisableOnClick(true);

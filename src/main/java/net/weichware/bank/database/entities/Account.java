@@ -33,7 +33,7 @@ public class Account {
     public static Account get(String name) {
         try (
                 Connection connection = State.dataSource().getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement("select name, balance, (select sum(t.BOOKING_VALUE) from transaction t where t.name = a.name) as open_balance  From account a where name = ?")
+                PreparedStatement preparedStatement = connection.prepareStatement("select name, balance, balance + (select sum(t.BOOKING_VALUE) from transaction t where t.name = a.name) as open_balance  From account a where name = ?")
         ) {
             preparedStatement.setString(1, name);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -52,7 +52,7 @@ public class Account {
         try (
                 Connection connection = State.dataSource().getConnection();
                 Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("select name, balance, (select sum(t.BOOKING_VALUE) from transaction t where t.name = a.name) as open_balance  From account a")
+                ResultSet resultSet = statement.executeQuery("select name, balance, balance +(select sum(t.BOOKING_VALUE) from transaction t where t.name = a.name and t.state = 'open') as open_balance  From account a")
         ) {
             while (resultSet.next()) {
                 accounts.add(new Account(resultSet));
@@ -63,4 +63,17 @@ public class Account {
         return accounts;
     }
 
+    public void updateBalance(Double value) {
+        try (
+                Connection connection = State.dataSource().getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement("update account set balance = ? where name = ?")
+        ) {
+            double v = value - Math.abs(balance);
+            preparedStatement.setDouble(1, v < 0 ? v : 0.0);
+            preparedStatement.setString(2, name);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DatabaseException("Could not update account balance for " + name + " with " + value, e);
+        }
+    }
 }
