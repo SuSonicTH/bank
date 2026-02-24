@@ -6,6 +6,9 @@ public final class Main {
     public static final String APPLICATION_NAME = "Wolf Bank";
 
     public static void main(String[] args) throws Exception {
-        new VaadinBoot().run();
+        VaadinBoot vaadinBoot = new VaadinBoot();
+        vaadinBoot.setListenOn("localhost");
+        vaadinBoot.setPort(4431);
+        vaadinBoot.run();
     }
 }
