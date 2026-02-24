@@ -30,11 +30,13 @@ public class MainMenu extends HorizontalLayout {
         SubMenu menu = menuBar.addItem(new Icon(VaadinIcon.MENU)).getSubMenu();
         if (user.isAdmin()) {
             menu.addItem("Benutzer", (event) -> Notification.show("Benutzer", 5000, Notification.Position.TOP_START));
-            menu.addItem("Konten", (event) -> UI.getCurrent().navigate(AccountView.ROUTE));
-            menu.addItem("Abrechnungen", (event) -> UI.getCurrent().navigate(InvoiceView.ROUTE));
-            menu.addItem("Abrechnung", (event) -> new CreateInvoice().open());
             menu.addItem("Benutzer Passwort zurücksetzen", (event) -> new NewPassword(true).open());
+            menu.addItem("Konten", (event) -> UI.getCurrent().navigate(AccountView.ROUTE));
+            menu.addItem("Abrechnung erstellen", (event) -> new CreateInvoice().open());
+        } else {
+            menu.addItem("Konto", (event) -> UI.getCurrent().navigate(AccountView.ROUTE));
         }
+        menu.addItem("Abrechnungen", (event) -> UI.getCurrent().navigate(InvoiceView.ROUTE));
         menu.addItem("Passwort ändern", (event) -> new NewPassword(false).open());
         menu.addItem("Abmelden", (event) -> Session.get().logout());
     }

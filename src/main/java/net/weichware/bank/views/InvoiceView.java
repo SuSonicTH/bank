@@ -43,12 +43,15 @@ public class InvoiceView extends VerticalLayout {
     }
 
     private void userPageSetup() {
-
+        setupInvoiceLayout(Invoice.getList(user.name()));
     }
 
     private void adminPageSetup() {
+        setupInvoiceLayout(Invoice.getList());
+    }
+
+    private void setupInvoiceLayout(List<Invoice> invoices) {
         add(new MainMenu(user, ROUTE));
-        List<Invoice> invoices = Invoice.getList();
         VerticalLayout layout = new VerticalLayout();
         layout.setMaxWidth("500px");
         invoices.stream().map(this::getInvoiceCard).forEach(layout::add);

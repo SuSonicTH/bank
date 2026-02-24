@@ -157,5 +157,4 @@ public class AccountView extends VerticalLayout {
         return card;
     }
 
-
 }

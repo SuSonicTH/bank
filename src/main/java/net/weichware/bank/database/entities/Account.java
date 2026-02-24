@@ -33,7 +33,7 @@ public class Account {
     public static Account get(String name) {
         try (
                 Connection connection = State.dataSource().getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement("select name, balance, balance + (select sum(t.BOOKING_VALUE) from transaction t where t.name = a.name) as open_balance  From account a where name = ?")
+                PreparedStatement preparedStatement = connection.prepareStatement("select name, balance, balance + (select sum(t.BOOKING_VALUE) from transaction t where t.name = a.name and t.STATE = 'open') as open_balance  From account a where name = ?")
         ) {
             preparedStatement.setString(1, name);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {

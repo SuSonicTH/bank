@@ -53,7 +53,13 @@ public class CreateInvoice extends BaseDialog {
         } else {
             Invoice.createInvoice(accountField.getValue());
         }
-        close();
         UI.getCurrent().navigate(InvoiceView.ROUTE);
+        close();
+    }
+
+    @Override
+    public void close() {
+        UI.getCurrent().refreshCurrentRoute(true);
+        super.close();
     }
 }
