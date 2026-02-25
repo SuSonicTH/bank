@@ -42,7 +42,9 @@ public class Booking extends BaseDialog {
         setupDialog();
 
         if (transaction != null) {
-            accountField.setValue(transaction.name());
+            if (user.isAdmin()) {
+                accountField.setValue(transaction.name());
+            }
             descriptionField.setValue(transaction.description());
             valueField.setValue(transaction.bookingValue());
             datePicker.setValue(transaction.valueDate());
